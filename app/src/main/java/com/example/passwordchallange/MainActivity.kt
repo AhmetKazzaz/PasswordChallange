@@ -7,11 +7,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    var binaryEmail = ""
+    var shift = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         etEmail.doOnTextChanged { text, _, _, _ ->
-            tvBinaryEmail.text = convertEmailToBinary(text.toString())
+            binaryEmail = convertEmailToBinary(text.toString())
+            tvBinaryEmail.text = binaryEmail
         }
     }
 
