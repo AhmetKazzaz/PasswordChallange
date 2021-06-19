@@ -10,6 +10,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        etEmail.doOnTextChanged { text, _, _, _ ->
+            tvBinaryEmail.text = convertEmailToBinary(text.toString())
+        }
     }
 
     private fun convertEmailToBinary(emailToConvert: String): String {
