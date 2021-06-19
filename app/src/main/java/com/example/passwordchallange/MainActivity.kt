@@ -2,13 +2,14 @@ package com.example.passwordchallange
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     var binaryEmail = ""
-    var shift = ""
+    var shift = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +18,20 @@ class MainActivity : AppCompatActivity() {
             binaryEmail = convertEmailToBinary(text.toString())
             tvBinaryEmail.text = binaryEmail
         }
+        etEmail.doAfterTextChanged {
+            shift = 0 // reset to 0
+            shift = sumBinaryDigits(binaryEmail)
+            tvShiftNumber.text = shift.toString()
+        }
+    }
+
+    private fun sumBinaryDigits(binaryEmail: String): Int {
+        var sum = 0
+        val charArray = binaryEmail.toCharArray()
+        charArray.forEach { character ->
+            sum += character.digitToInt()
+        }
+        return sum
     }
 
     private fun convertEmailToBinary(emailToConvert: String): String {
