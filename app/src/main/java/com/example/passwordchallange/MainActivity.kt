@@ -5,46 +5,53 @@ import android.os.Bundle
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity() {
 
     var binaryEmail = ""
     var shift = 0
+    var listOfPossiblePasswords: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        etEmail.doOnTextChanged { text, _, _, _ ->
-            binaryEmail = convertEmailToBinary(text.toString())
-            tvBinaryEmail.text = binaryEmail
-        }
-        etEmail.doAfterTextChanged {
-            shift = 0 // reset to 0
-            shift = sumBinaryDigits(binaryEmail)
-            tvShiftNumber.text = shift.toString()
-        }
-    }
 
-    private fun sumBinaryDigits(binaryEmail: String): Int {
-        var sum = 0
-        val charArray = binaryEmail.toCharArray()
-        charArray.forEach { character ->
-            sum += character.digitToInt()
-        }
-        return sum
-    }
-
-    private fun convertEmailToBinary(emailToConvert: String): String {
-        val bytesFromString = emailToConvert.toByteArray()
-        val result = StringBuilder()
-        for (byte in bytesFromString) {
-            var temp = byte.toInt()
-            (0..7).forEach { _ ->
-                result.append(if (temp and 128 == 0) 0 else 1)
-                temp = temp shl 1
+        btnDecrypt.setOnClickListener {
+            shift = 26
+            for (i in 0..shift) {
+                encrypt(i)
+                passwords.text = listOfPossiblePasswords.toString()
             }
         }
-        return result.toString()
+    }
+
+    private fun encrypt(shift: Int) {
+        var ciphertext = ""
+        var alphabet: Char
+        for (i in etEmail.text.toString().indices) {
+            alphabet = etEmail.text.toString()[i]
+            when (alphabet) {
+                in 'a'..'z' -> {
+                    alphabet = (alphabet.code + shift).toChar()
+                    if (alphabet > 'z') {
+                        alphabet = (alphabet + 'a'.code - 'z'.code - 1)
+                    }
+                    ciphertext += alphabet
+                }
+                in 'A'..'Z' -> {
+                    alphabet = (alphabet.code + shift).toChar()
+                    if (alphabet > 'Z') {
+                        alphabet = (alphabet + 'A'.code - 'Z'.code - 1)
+                    }
+                    ciphertext += alphabet
+                }
+                else -> {
+                    ciphertext += alphabet
+                }
+            }
+        }
+        listOfPossiblePasswords.add(ciphertext)
     }
 
 }
